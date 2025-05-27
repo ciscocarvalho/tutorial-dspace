@@ -379,6 +379,64 @@ Para interromper a execução do Tomcat, use o seguinte comando:
 
 <br>
 
+## Migrando do DSpace 4, 5 ou 6 para o DSpace 7
+
+<br>
+
+> [!WARNING]
+> Todos os passos de migração usam Docker no momento.
+
+<br>
+
+### Importando as estatísticas de uso do Solr da instalação antiga para a instalação nova
+
+<br>
+
+> [!WARNING]
+> `[DSPACE-INSTALL-DIR]` nos próximos passos se refere ao diretório da instalação antiga.
+
+<br>
+
+- Interrompa a execução do sistema (veja [Interrompendo a execução do sistema](#interrompendo-a-execução-do-sistema)).
+- Copie o arquivo `./old-solr-xml.xml` deste tutorial para `[DSPACE-INSTALL-DIR]/webapps/solr/WEB-INF/web.xml`.
+- Rode esses comandos para exportar as estatísticas (lembre-se de substituir os diretórios):
+    Obs.: isso deve ser executado com o `bash`.
+    ```bash
+    mkdir -p ./estatisticas
+
+    docker network create oldsolr
+    docker run -d --net oldsolr --name tomcatsolr -p 7777:8080 -v [DSPACE-INSTALL-DIR]:/dspace -v [DSPACE-INSTALL-DIR]/webapps/solr:/usr/local/tomcat/webapps/solr -w /dspace tomcat:8.5.89-jdk8-temurin-jammy
+
+    timeout 20s grep -q ' Server startup in ' <(docker logs tomcatsolr --follow)
+
+    docker run --rm --net oldsolr -v $(pwd):/unzip --name downloadsolrdata -w /unzip kubeless/unzip curl 'http://tomcatsolr:8080/solr/statistics/select?q=*%3A*&rows=99999999&wt=csv&indent=true&&fl=owner%2Csubmitter%2CisBot%2Cstatistics_type%2CpreviousWorkflowStep%2CworkflowItemId%2Cip%2Cdns%2CworkflowStep%2CuserAgent%2Ctype%2Cactor%2Creferrer%2Cuid%2CowningItem%2CbundleName%2Cid%2Ctime%2Cepersonid%2CowningColl%2CowningComm' -o ./estatisticas/export.csv -L
+
+    sudo split -l 100000 ./estatisticas/export.csv ./estatisticas/solr_
+
+    for file in ./estatisticas/solr_*
+    do
+    if  [ "${file##*/}" != "solr_aa" ]; then
+        docker run --rm -e PARCIAL_SOLR=${file} -v $(pwd)/estatisticas:/tmp -w /tmp intel/qat-crypto-base:qatsw-ubuntu \
+        sed -i '1s/^/owner,submitter,isBot,statistics_type,previousWorkflowStep,workflowItemId,ip,dns,workflowStep,userAgent,type,actor,referrer,uid,owningItem,bundleName,id,time,epersonid,owningColl,owningComm\n/' ${file##*/}
+    fi
+    done
+
+    docker rm -f tomcatsolr
+    docker rm -f downloadsolrdata
+    docker rm -f intel/qat-crypto-base:qatsw-ubuntu
+    ```
+- Com isso, os arquivos das estatisticas são gerados no diretório `./estatisticas`.
+- Inicie o sistema (veja [Iniciando o sistema](#iniciando-o-sistema)).
+- Rode esses comandos para importar as estatísticas:
+    Obs.: você deve rodar esses comandos no mesmo diretório onde rodou os comandos que geram as estatísticas.
+    ```bash
+    for file in ./estatisticas/solr_*; do
+      docker run --rm --network="dspacenet" -e file=${file} -v $(pwd):/unzip -w /unzip kubeless/unzip curl 'http://dspace7solr:8983/solr/statistics/update?commit=true&commitWithin=1000' --data-binary @"${file}" -H 'Content-type:application/csv'
+    done
+    ```
+
+<br>
+
 ## Créditos
 
 <br>
