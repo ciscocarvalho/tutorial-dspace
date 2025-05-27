@@ -21,6 +21,8 @@ versões 7, 8 e 9, podendo mudar apenas as versões de dependências específica
 - [Interrompendo a execução do sistema](#interrompendo-a-execução-do-sistema)
   - [Interrompendo o Solr](#interrompendo-o-solr)
   - [Interrompendo o Tomcat](#interrompendo-o-tomcat)
+- [Migrando do DSpace 4, 5 ou 6 para o DSpace 7](#migrando-do-dspace-4-5-ou-6-para-o-dspace-7)
+    - [Importando as estatísticas de uso do Solr da instalação antiga para a instalação nova](#importando-as-estatísticas-de-uso-do-solr-da-instalação-antiga-para-a-instalação-nova)
 - [Créditos](#créditos)
 
 <br>
