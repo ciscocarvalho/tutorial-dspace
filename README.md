@@ -3,6 +3,28 @@
 Este é tutorial de como instalar o DSpace. Esse procedimento funciona para as
 versões 7, 8 e 9, podendo mudar apenas as versões de dependências específicas.
 
+## Sumário
+
+<br>
+
+- [Instalando as dependências](#instalando-as-dependências)
+- [Baixando o projeto](#baixando-o-projeto)
+- [Preparando o banco de dados](#preparando-o-banco-de-dados)
+- [Configurando o DSpace](#configurando-o-dspace)
+- [Instalando as dependências internas, compilando o projeto e fazendo a instalação](#instalando-as-dependências-internas-compilando-o-projeto-e-fazendo-a-instalação)
+- [Copiando cores do Solr](#copiando-cores-do-solr)
+- [Adicionando webapps ao tomcat](#adicionando-webapps-ao-tomcat)
+- [Criando um usuário administrador](#criando-um-usuário-administrador)
+- [Iniciando o sistema](#iniciando-o-sistema)
+  - [Iniciando o Solr](#iniciando-o-solr)
+  - [Iniciando o Tomcat](#iniciando-o-tomcat)
+- [Interrompendo a execução do sistema](#interrompendo-a-execução-do-sistema)
+  - [Interrompendo o Solr](#interrompendo-o-solr)
+  - [Interrompendo o Tomcat](#interrompendo-o-tomcat)
+- [Créditos](#créditos)
+
+<br>
+
 ## Instalando as dependências
 
 <br>
