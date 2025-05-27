@@ -354,3 +354,11 @@ Para interromper a execução do Tomcat, use o seguinte comando:
 ```sh
 [TOMCAT-DIR]/bin/shutdown.sh
 ```
+
+<br>
+
+## Créditos
+
+<br>
+
+Este projeto aproveitou parte do conteúdo e das instruções do projeto [dspace-updater-tool](https://github.com/projetos-codic-ibict/dspace-updater-tool), que foi fundamental para a criação deste tutorial.
